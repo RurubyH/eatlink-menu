@@ -50,7 +50,8 @@
   body{background:var(--bg);color:var(--ink);min-height:100vh;}
   .container{max-width:960px;margin:0 auto;}
 
-  .hero{background:var(--brown);margin:16px 14px 0;border-radius:14px;padding:24px;text-align:center;}
+  /* 高度 = padding（上下）；寬度 = margin 左右的數字（越大框越窄） */
+  .hero{background:var(--brown);margin:14px 14px 0;border-radius:14px;padding:14px 20px;text-align:center;}
   .hero h1{color:#fff;font-size:var(--hero-title-size);font-weight:600;letter-spacing:.02em;}
   .hero .hsub{color:#d8c7b8;font-size:var(--hero-sub-size);margin-top:10px;}
 
@@ -75,8 +76,8 @@
 
   /* sticky nav zone */
   .navzone{position:sticky;top:0;z-index:20;background:var(--bg);padding-bottom:2px;}
-  .toptabs{display:flex;justify-content:center;gap:14px;padding:16px 14px 8px;}
-  .toptab{padding:12px 30px;border-radius:999px;font-size:var(--tab-size);font-weight:700;white-space:nowrap;
+  .toptabs{display:flex;justify-content:center;gap:12px;padding:12px 14px 6px;}
+  .toptab{padding:9px 24px;border-radius:999px;font-size:var(--tab-size);font-weight:700;white-space:nowrap;
     border:2px solid var(--brown);background:transparent;color:var(--brown);cursor:pointer;transition:.15s;}
   .toptab.on{background:var(--brown);color:#fff;}
 
@@ -89,7 +90,7 @@
   .day-pill.is-today::after{content:"今日";position:absolute;top:4px;right:5px;background:var(--accent);
     color:#fff;font-size:var(--today-badge-size);padding:1px 5px;border-radius:5px;font-weight:600;line-height:1.4;}
 
-  .grid{padding:8px 10px 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+  .grid{padding:8px 8px 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;}
 
   .card{background:#fff;border:1px solid #eee6d8;border-radius:14px;padding:12px 12px 10px;}
   .v-name{font-size:var(--menu-vendor-size);font-weight:700;color:var(--ink);}
@@ -111,7 +112,7 @@
   .g-vendor{margin-bottom:20px;}
   .g-vendor h3{font-size:var(--gallery-vendor-size);font-weight:700;color:var(--brown-dark);
     padding:0 4px 10px;border-bottom:1px solid #e6ddcd;margin-bottom:12px;}
-  .g-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+  .g-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;}
   .g-item{background:#fff;border-radius:8px;overflow:hidden;border:1px solid #eee6d8;}
   .g-item .ph{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#efe9df;}
   .g-item .cap{font-size:var(--gallery-caption-size);color:#5a5248;padding:5px 3px;line-height:1.3;text-align:center;}
