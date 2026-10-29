@@ -11,29 +11,29 @@
     /* ===================================================== */
     /*  ▼▼▼ 字體大小總管：想調哪裡就改哪一行的數字 ▼▼▼    */
     /*  ── 頁面上方 ──                                        */
-    --hero-title-size:60px;       /* 棕色框裡的大標「飪點 eatLink」 */
-    --hero-sub-size:17px;         /* 棕色框裡顯示的大樓名稱 */
-    --tab-size:35px;              /* 「本週菜單」「美味圖庫」按鈕 */
-    --date-num-size:30px;         /* 日期數字 07/06 */
-    --date-week-size:25px;        /* 日期星期 (週一) */
-    --today-badge-size:9px;       /* 日期上的「今日」小標籤 */
+    --hero-title-size:34px;       /* 棕色框裡的大標「飪點 eatLink」 */
+    --hero-sub-size:15px;         /* 棕色框裡顯示的大樓名稱 */
+    --tab-size:19px;              /* 「本週菜單」「美味圖庫」按鈕 */
+    --date-num-size:22px;         /* 日期數字 07/06 */
+    --date-week-size:14px;        /* 日期星期 (週一) */
+    --today-badge-size:10px;      /* 日期上的「今日」小標籤 */
     /*  ── 選擇大樓頁 ──                                      */
-    --pick-lead-size:50px;        /* 「您在哪一棟？」 */
-    --region-size:45px;           /* 地區標題（機場專區那種） */
-    --building-size:40px;         /* 大樓按鈕文字 */
+    --pick-lead-size:28px;        /* 「您在哪一棟？」 */
+    --region-size:22px;           /* 地區標題（機場專區那種） */
+    --building-size:21px;         /* 大樓按鈕文字 */
     /*  ── 換大樓列（菜單上方那條） ──                        */
-    --cur-building-size:45px;     /* 目前所在大樓名稱 */
-    --change-building-size:40px;  /* 「← 換大樓」按鈕 */
+    --cur-building-size:20px;     /* 目前所在大樓名稱 */
+    --change-building-size:15px;  /* 「← 換大樓」按鈕 */
     /*  ── 本週菜單 ──                                        */
-    --menu-vendor-size:30px;      /* 店家名稱 */
-    --menu-item-size:20px;        /* 品項與價格 */
-    --menu-tag-size:22px;         /* 品項標籤（體脂退散那種） */
+    --menu-vendor-size:22px;      /* 店家名稱 */
+    --menu-item-size:17px;        /* 品項與價格 */
+    --menu-tag-size:14px;         /* 品項標籤（體脂退散那種） */
     /*  ── 美味圖庫 ──                                        */
-    --gallery-vendor-size:25px;   /* 店家標題 */
-    --gallery-caption-size:17px;  /* 照片下方的品項名稱 */
+    --gallery-vendor-size:18px;   /* 店家標題 */
+    --gallery-caption-size:13px;  /* 照片下方的品項名稱 */
     /*  ── 頁面下方 ──                                        */
-    --cta-size:30px;              /* 「前往點餐」按鈕 */
-    --foot-size:25px;             /* 最底「每日菜單 09:00 截單」 */
+    --cta-size:20px;              /* 「前往點餐」按鈕 */
+    --foot-size:13px;             /* 最底「每日菜單 09:00 截單」 */
     /*  ▲▲▲ 數字越大字越大，例如改成 20px、24px ▲▲▲       */
     /* ===================================================== */
     --brown:#7a6a5c;
@@ -60,24 +60,23 @@
   .region-name{display:flex;align-items:center;gap:9px;font-size:var(--region-size);font-weight:700;color:var(--brown);margin-bottom:14px;}
   .region-name::before{content:"";width:6px;height:22px;background:var(--accent);border-radius:3px;}
   .b-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-  .b-card{background:#fff;border:1px solid #e8dfd0;border-radius:16px;padding:22px 16px;
+  .b-card{background:#fff;border:1px solid #e8dfd0;border-radius:14px;padding:16px 12px;
     text-align:center;font-size:var(--building-size);font-weight:600;color:var(--ink);cursor:pointer;
-    display:flex;align-items:center;justify-content:center;min-height:84px;line-height:1.4;
+    display:flex;align-items:center;justify-content:center;min-height:62px;line-height:1.35;
     transition:.15s;box-shadow:0 2px 6px rgba(122,106,92,.08);}
   .b-card:active{background:var(--brown);color:#fff;transform:scale(.98);}
 
   /* ===== 換大樓列 ===== */
-  .bldbar{position:relative;display:flex;align-items:center;justify-content:center;
-    margin:16px 14px 0;padding:14px 16px;background:#efe7da;border-radius:12px;min-height:56px;}
-  .bldbar .cur{font-size:var(--cur-building-size);font-weight:700;color:var(--brown-dark);line-height:1.3;text-align:center;}
-  .bldbar .chg{position:absolute;right:12px;top:50%;transform:translateY(-50%);
-    font-size:var(--change-building-size);font-weight:600;color:#fff;background:var(--brown);
-    padding:8px 16px;border-radius:999px;cursor:pointer;white-space:nowrap;}
+  .bldbar{display:flex;align-items:center;gap:10px;
+    margin:16px 14px 0;padding:12px 14px;background:#efe7da;border-radius:12px;}
+  .bldbar .cur{flex:1;min-width:0;font-size:var(--cur-building-size);font-weight:700;color:var(--brown-dark);line-height:1.3;text-align:center;}
+  .bldbar .chg{flex:none;font-size:var(--change-building-size);font-weight:600;color:#fff;background:var(--brown);
+    padding:8px 14px;border-radius:999px;cursor:pointer;white-space:nowrap;}
 
   /* sticky nav zone */
   .navzone{position:sticky;top:0;z-index:20;background:var(--bg);padding-bottom:2px;}
   .toptabs{display:flex;justify-content:center;gap:14px;padding:16px 14px 8px;}
-  .toptab{padding:15px 38px;border-radius:999px;font-size:var(--tab-size);font-weight:700;
+  .toptab{padding:12px 30px;border-radius:999px;font-size:var(--tab-size);font-weight:700;white-space:nowrap;
     border:2px solid var(--brown);background:transparent;color:var(--brown);cursor:pointer;transition:.15s;}
   .toptab.on{background:var(--brown);color:#fff;}
 
@@ -180,9 +179,9 @@
   // ===================================================================
   //  ▼▼▼ 設定區：貼上你的網址 ▼▼▼
   //  GAS 資料接口（部署後的 /exec 網址）
-  var GAS_URL = "https://script.google.com/macros/s/AKfycbwxj5VMmNc0HPYaFedCDVijWd_KaJtlIQUsU9qR4u7zyP0SGAql4U8-UrL_ZSOgTYM/exec";
+  var GAS_URL = "https://script.google.com/macros/s/AKfycbxbMsMaLOk8eSmRpk8XKFath3AQcjUNe7JomI4GfQxKp42zwUSp3downT_docHPKagahw/exec";
   //  QuickClick 點餐頁
-  var ORDER_URL = "https://rurubyh.github.io/eatlink-order/";
+  var ORDER_URL = "https://line.quickclick.cc/line/views/liff/liff2-menu?accountId=29225&source=qc&token=7d8fa44569077910ad740bfcbea18c57e22a26b6b637f25198ec93cb30d90124";
   // ===================================================================
 
   var menuData = [];        // 全部菜單（含每道菜的大樓清單）
