@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>飪點 eatLink 菜單系統</title>
+<link rel="preconnect" href="https://lh3.googleusercontent.com" crossorigin>
+<link rel="preconnect" href="https://drive.google.com" crossorigin>
+<style>
+  :root{
+    /* ===================================================== */
+    /*  ▼▼▼ 字體大小總管：想調哪裡就改哪一行的數字 ▼▼▼    */
+    /*  ── 頁面上方 ──                                        */
+    --hero-title-size:60px;       /* 棕色框裡的大標「飪點 eatLink」 */
+    --hero-sub-size:17px;         /* 棕色框裡顯示的大樓名稱 */
+    --tab-size:35px;              /* 「本週菜單」「美味圖庫」按鈕 */
+    --date-num-size:30px;         /* 日期數字 07/06 */
+    --date-week-size:25px;        /* 日期星期 (週一) */
+    --today-badge-size:9px;       /* 日期上的「今日」小標籤 */
+    /*  ── 選擇大樓頁 ──                                      */
+    --pick-lead-size:50px;        /* 「您在哪一棟？」 */
+    --region-size:45px;           /* 地區標題（機場專區那種） */
+    --building-size:40px;         /* 大樓按鈕文字 */
+    /*  ── 換大樓列（菜單上方那條） ──                        */
+    --cur-building-size:45px;     /* 目前所在大樓名稱 */
+    --change-building-size:40px;  /* 「← 換大樓」按鈕 */
+    /*  ── 本週菜單 ──                                        */
+    --menu-vendor-size:30px;      /* 店家名稱 */
+    --menu-item-size:20px;        /* 品項與價格 */
+    --menu-tag-size:22px;         /* 品項標籤（體脂退散那種） */
+    /*  ── 美味圖庫 ──                                        */
+    --gallery-vendor-size:25px;   /* 店家標題 */
+    --gallery-caption-size:17px;  /* 照片下方的品項名稱 */
+    /*  ── 頁面下方 ──                                        */
+    --cta-size:30px;              /* 「前往點餐」按鈕 */
+    --foot-size:25px;             /* 最底「每日菜單 09:00 截單」 */
+    /*  ▲▲▲ 數字越大字越大，例如改成 20px、24px ▲▲▲       */
+    /* ===================================================== */
+    --brown:#7a6a5c;
+    --brown-dark:#6a5a4d;
+    --tan:#e9ddcb;
+    --bg:#f3efe8;
+    --ink:#3a3229;
+    --muted:#9a8f82;
+    --price:#8a6f4f;
+    --accent:#c0743e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","PingFang TC",sans-serif;}
+  body{background:var(--bg);color:var(--ink);min-height:100vh;}
+  .container{max-width:960px;margin:0 auto;}
+
+  .hero{background:var(--brown);margin:16px 14px 0;border-radius:14px;padding:24px;text-align:center;}
+  .hero h1{color:#fff;font-size:var(--hero-title-size);font-weight:600;letter-spacing:.02em;}
+  .hero .hsub{color:#d8c7b8;font-size:var(--hero-sub-size);margin-top:10px;}
+
+  /* ===== 選擇大樓頁 ===== */
+  .pick-lead{text-align:center;font-size:var(--pick-lead-size);font-weight:700;color:var(--brown-dark);padding:26px 0 4px;}
+  .region{padding:18px 16px 2px;}
+  .region-name{display:flex;align-items:center;gap:9px;font-size:var(--region-size);font-weight:700;color:var(--brown);margin-bottom:14px;}
+  .region-name::before{content:"";width:6px;height:22px;background:var(--accent);border-radius:3px;}
+  .b-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .b-card{background:#fff;border:1px solid #e8dfd0;border-radius:16px;padding:22px 16px;
+    text-align:center;font-size:var(--building-size);font-weight:600;color:var(--ink);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;min-height:84px;line-height:1.4;
+    transition:.15s;box-shadow:0 2px 6px rgba(122,106,92,.08);}
+  .b-card:active{background:var(--brown);color:#fff;transform:scale(.98);}
+
+  /* ===== 換大樓列 ===== */
+  .bldbar{position:relative;display:flex;align-items:center;justify-content:center;
+    margin:16px 14px 0;padding:14px 16px;background:#efe7da;border-radius:12px;min-height:56px;}
+  .bldbar .cur{font-size:var(--cur-building-size);font-weight:700;color:var(--brown-dark);line-height:1.3;text-align:center;}
+  .bldbar .chg{position:absolute;right:12px;top:50%;transform:translateY(-50%);
+    font-size:var(--change-building-size);font-weight:600;color:#fff;background:var(--brown);
+    padding:8px 16px;border-radius:999px;cursor:pointer;white-space:nowrap;}
+
+  /* sticky nav zone */
+  .navzone{position:sticky;top:0;z-index:20;background:var(--bg);padding-bottom:2px;}
+  .toptabs{display:flex;justify-content:center;gap:14px;padding:16px 14px 8px;}
+  .toptab{padding:15px 38px;border-radius:999px;font-size:var(--tab-size);font-weight:700;
+    border:2px solid var(--brown);background:transparent;color:var(--brown);cursor:pointer;transition:.15s;}
+  .toptab.on{background:var(--brown);color:#fff;}
+
+  .days{display:flex;gap:8px;padding:14px 14px 12px;}
+  .day-pill{flex:1;text-align:center;padding:15px 4px 12px;border-radius:14px;
+    background:#e7e0d5;color:#8a7f70;cursor:pointer;position:relative;transition:.15s;}
+  .day-pill .d{font-size:var(--date-num-size);font-weight:700;line-height:1;}
+  .day-pill .w{font-size:var(--date-week-size);margin-top:5px;opacity:.85;white-space:nowrap;}
+  .day-pill.on{background:var(--brown);color:#fff;}
+  .day-pill.is-today::after{content:"今日";position:absolute;top:4px;right:5px;background:var(--accent);
+    color:#fff;font-size:var(--today-badge-size);padding:1px 5px;border-radius:5px;font-weight:600;line-height:1.4;}
+
+  .grid{padding:8px 12px 16px;display:grid;grid-template-columns:1fr;gap:12px;}
+  @media(min-width:430px){.grid{grid-template-columns:1fr 1fr;}}
+  @media(min-width:760px){.grid{grid-template-columns:1fr 1fr 1fr;}}
+
+  .card{background:#fff;border:1px solid #eee6d8;border-radius:14px;padding:16px 16px 14px;}
+  .v-name{font-size:var(--menu-vendor-size);font-weight:700;color:var(--ink);}
+  .v-tag{display:inline-block;font-size:var(--menu-tag-size);color:#8a7458;background:var(--tan);
+    padding:3px 10px;border-radius:6px;margin-top:7px;margin-bottom:10px;}
+  .row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+    padding:3px 0;border-bottom:1px dashed #f0ece2;}
+  .row:last-child{border-bottom:none;}
+  .r-name{font-size:var(--menu-item-size);color:#463d31;line-height:1.25;}
+  .r-price{font-size:var(--menu-item-size);font-weight:700;color:var(--price);white-space:nowrap;}
+
+  .cta{margin:10px 14px 26px;text-align:center;}
+  .cta a{display:inline-block;background:var(--brown);color:#fff;font-size:var(--cta-size);
+    font-weight:700;padding:20px 56px;border-radius:16px;text-decoration:none;
+    box-shadow:0 4px 14px rgba(122,106,92,.28);}
+
+  /* photo gallery */
+  .gallery{padding:8px 12px 16px;}
+  .g-vendor{margin-bottom:20px;}
+  .g-vendor h3{font-size:var(--gallery-vendor-size);font-weight:700;color:var(--brown-dark);
+    padding:0 4px 10px;border-bottom:1px solid #e6ddcd;margin-bottom:12px;}
+  .g-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+  .g-item{background:#fff;border-radius:8px;overflow:hidden;border:1px solid #eee6d8;}
+  .g-item .ph{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#efe9df;}
+  .g-item .cap{font-size:var(--gallery-caption-size);color:#5a5248;padding:5px 3px;line-height:1.3;text-align:center;}
+
+  .state{text-align:center;padding:60px 24px;color:var(--muted);font-size:15px;line-height:1.8;}
+  .spinner{width:34px;height:34px;border:3px solid #e0d8c8;border-top-color:var(--brown);
+    border-radius:50%;margin:0 auto 14px;animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .hide{display:none;}
+
+  .foot{text-align:center;font-size:var(--foot-size);color:#b0a596;padding:0 16px 30px;line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <h1>飪點 eatLink</h1>
+    <div class="hsub" id="heroSub"></div>
+  </div>
+
+  <!-- ===== 選擇大樓頁 ===== -->
+  <div id="viewPick">
+    <div class="pick-lead">您在哪一棟？</div>
+    <div id="pickLoading" class="state"><div class="spinner"></div>載入中…</div>
+    <div id="pickWrap"></div>
+  </div>
+
+  <!-- ===== 菜單主畫面 ===== -->
+  <div id="viewMain" class="hide">
+    <div class="bldbar">
+      <div class="cur" id="curBuilding"></div>
+      <div class="chg" onclick="backToPick()">← 換大樓</div>
+    </div>
+
+    <div class="navzone">
+      <div class="toptabs">
+        <div class="toptab on" id="tabMenu" onclick="switchTab('menu')">本週菜單</div>
+        <div class="toptab" id="tabPhoto" onclick="switchTab('photo')">美味圖庫</div>
+      </div>
+      <div class="days hide" id="dayBar"></div>
+    </div>
+
+    <div id="viewMenu">
+      <div class="state hide" id="menuLoading"></div>
+      <div class="grid hide" id="menuGrid"></div>
+    </div>
+
+    <div id="viewPhoto" class="hide">
+      <div class="gallery hide" id="photoWrap"></div>
+    </div>
+
+    <div class="cta">
+      <a id="orderBtn" href="#" target="_blank" rel="noopener">前往點餐 →</a>
+    </div>
+  </div>
+
+  <div class="foot">飪點 eatLink · 每日菜單 09:00 截單</div>
+
+</div>
+
+<script>
+  // ===================================================================
+  //  ▼▼▼ 設定區：貼上你的網址 ▼▼▼
+  //  GAS 資料接口（部署後的 /exec 網址）
+  var GAS_URL = "在這裡貼上你的 GAS /exec 網址";
+  //  QuickClick 點餐頁
+  var ORDER_URL = "https://line.quickclick.cc/line/views/liff/liff2-menu?accountId=29225&source=qc&token=7d8fa44569077910ad740bfcbea18c57e22a26b6b637f25198ec93cb30d90124";
+  // ===================================================================
+
+  var menuData = [];        // 全部菜單（含每道菜的大樓清單）
+  var photoData = [];       // 全部照片
+  var currentTab = 'menu';
+  var activeDay = 0;
+  var activeBuilding = "";
+  var viewMenuData = [];    // 過濾後、目前這棟的菜單
+
+  document.getElementById('orderBtn').href = ORDER_URL;
+
+  // ---- 用 JSONP 載入資料（避開 CORS）----
+  (function loadData(){
+    var s = document.createElement('script');
+    s.src = GAS_URL + (GAS_URL.indexOf('?') > -1 ? '&' : '?') + "callback=onData&t=" + Date.now();
+    s.onerror = function(){ pickError("連線失敗，請重新整理試試"); };
+    document.body.appendChild(s);
+  })();
+
+  window.onData = function(res){
+    if(!res || !res.success){ pickError(res && res.error ? res.error : "資料載入失敗"); return; }
+    menuData  = res.menu   || [];
+    photoData = res.photos || [];
+    renderBuildings(res.buildings || []);
+  };
+
+  // ===== 選擇大樓頁 =====
+  function renderBuildings(regions){
+    if(!regions.length){ pickError("目前沒有大樓資料"); return; }
+    var html = "";
+    regions.forEach(function(r){
+      var cards = "";
+      r.buildings.forEach(function(b){
+        cards += '<div class="b-card" onclick="chooseBuilding(' + JSON.stringify(b).replace(/"/g,'&quot;') + ')">' + esc(b) + '</div>';
+      });
+      html += '<div class="region"><div class="region-name">' + esc(r.region) + '</div>' +
+                '<div class="b-grid">' + cards + '</div></div>';
+    });
+    document.getElementById('pickLoading').classList.add('hide');
+    document.getElementById('pickWrap').innerHTML = html;
+  }
+  function pickError(msg){
+    document.getElementById('pickLoading').innerHTML =
+      "😵 載入失敗<br><span style='font-size:12px'>"+esc(String(msg||""))+"</span>";
+  }
+
+  function chooseBuilding(name){
+    activeBuilding = name;
+    document.getElementById('curBuilding').textContent = name;
+    document.getElementById('viewPick').classList.add('hide');
+    document.getElementById('viewMain').classList.remove('hide');
+    window.scrollTo(0,0);
+    currentTab = 'menu';
+    document.getElementById('tabMenu').classList.add('on');
+    document.getElementById('tabPhoto').classList.remove('on');
+    document.getElementById('viewMenu').classList.remove('hide');
+    document.getElementById('viewPhoto').classList.add('hide');
+    startMenu();
+  }
+  function backToPick(){
+    document.getElementById('viewMain').classList.add('hide');
+    document.getElementById('viewPick').classList.remove('hide');
+    document.getElementById('heroSub').textContent = "";
+    window.scrollTo(0,0);
+  }
+
+  // ===== 依選定大樓過濾菜單 =====
+  function buildingMenu(){
+    var out = [];
+    menuData.forEach(function(day){
+      var vendors = [];
+      (day.vendors || []).forEach(function(v){
+        var items = [], prices = [];
+        (v.items || []).forEach(function(it, idx){
+          var blds = (v.buildings || [])[idx] || [];
+          if (buildingMatch(blds, activeBuilding)){ items.push(it); prices.push((v.prices||[])[idx]); }
+        });
+        if (items.length) vendors.push({ name:v.name, tag:v.tag, items:items, prices:prices });
+      });
+      if (vendors.length) out.push({ month:day.month, date:day.date, weekday:day.weekday, vendors:vendors });
+    });
+    return out;
+  }
+  function buildingMatch(list, target){
+    var t = normB(target);
+    return (list || []).some(function(b){ return normB(b) === t; });
+  }
+  function normB(s){ return String(s==null?'':s).replace(/[\s　]+/g,'').trim(); }
+
+  function startMenu(){
+    viewMenuData = buildingMenu();
+    var ml = document.getElementById('menuLoading');
+    document.getElementById('menuGrid').classList.add('hide');
+    document.getElementById('dayBar').classList.add('hide');
+    if(!viewMenuData.length){
+      ml.classList.remove('hide');
+      ml.innerHTML = "這棟目前沒有菜單資料<br><span style='font-size:12px'>請改天再看，或點「換大樓」</span>";
+      return;
+    }
+    ml.classList.add('hide');
+    buildDayBar();
+    activeDay = getDefaultDay();
+    renderDay(activeDay);
+    document.getElementById('menuGrid').classList.remove('hide');
+    document.getElementById('dayBar').classList.remove('hide');
+  }
+
+  // ---- 日期 ----
+  function findTodayIndex(){
+    var now = new Date();
+    var key = ("0"+(now.getMonth()+1)).slice(-2) + "/" + ("0"+now.getDate()).slice(-2);
+    for(var i=0;i<viewMenuData.length;i++){
+      if(viewMenuData[i].month + "/" + viewMenuData[i].date === key) return i;
+    }
+    return -1;
+  }
+  function getDefaultDay(){ var t = findTodayIndex(); return t >= 0 ? t : 0; }
+
+  function buildDayBar(){
+    var bar = document.getElementById('dayBar');
+    var todayIdx = findTodayIndex();
+    var html = "";
+    viewMenuData.forEach(function(day, i){
+      var wk = "(週" + (day.weekday || "").replace(/[()]/g,"") + ")";
+      var todayCls = (todayIdx >= 0 && i === todayIdx) ? " is-today" : "";
+      html += '<div class="day-pill'+todayCls+'" data-i="'+i+'" onclick="selectDay('+i+')">' +
+                '<div class="d">'+day.month+'/'+day.date+'</div><div class="w">'+wk+'</div></div>';
+    });
+    bar.innerHTML = html;
+    highlightDay(getDefaultDay());
+  }
+  function selectDay(i){
+    activeDay = i; highlightDay(i);
+    if(currentTab === 'menu'){ renderDay(i); } else { renderPhotoDay(i); }
+  }
+  function highlightDay(i){
+    document.querySelectorAll('#dayBar .day-pill').forEach(function(p){
+      p.classList.toggle('on', Number(p.getAttribute('data-i')) === i);
+    });
+  }
+  function renderDay(i){
+    var day = viewMenuData[i];
+    if(!day){ return; }
+    var html = "";
+    day.vendors.forEach(function(v){
+      var rows = "";
+      (v.items || []).forEach(function(item, idx){
+        rows += '<div class="row"><span class="r-name">'+esc(item)+'</span>' +
+                  '<span class="r-price">'+fmtPrice((v.prices||[])[idx])+'</span></div>';
+      });
+      var tag = v.tag ? '<div class="v-tag">'+esc(v.tag)+'</div>' : '';
+      html += '<div class="card"><div class="v-name">'+esc(v.name)+'</div>' + tag + rows + '</div>';
+    });
+    document.getElementById('menuGrid').innerHTML = html;
+  }
+
+  // ---- 分頁切換 ----
+  function switchTab(which){
+    currentTab = which;
+    var isMenu = (which === 'menu');
+    document.getElementById('tabMenu').classList.toggle('on', isMenu);
+    document.getElementById('tabPhoto').classList.toggle('on', !isMenu);
+    document.getElementById('viewMenu').classList.toggle('hide', !isMenu);
+    document.getElementById('viewPhoto').classList.toggle('hide', isMenu);
+    document.getElementById('dayBar').classList.toggle('hide', viewMenuData.length === 0);
+    if(isMenu){ renderDay(activeDay); }
+    else {
+      document.getElementById('photoWrap').classList.remove('hide');
+      renderPhotoDay(activeDay);
+    }
+  }
+
+  // ---- 圖庫（順序比照當天菜單）----
+  function renderPhotoDay(i){
+    var wrap = document.getElementById('photoWrap');
+    var day = viewMenuData[i];
+    if(!day){ wrap.innerHTML = ""; return; }
+    var html = "";
+    (day.vendors || []).forEach(function(v){
+      var items = "", count = 0;
+      (v.items || []).forEach(function(itemName){
+        var raw = normStrict(itemName), it = norm(itemName);
+        if(!raw) return;
+        var pool = photoData.filter(function(x){ return norm(x.vendor) === norm(v.name); });
+        var p = pool.find(function(x){ return normStrict(x.name) === raw; });
+        if(!p){ p = pool.find(function(x){ return norm(x.name) === it; }); }
+        if(!p){ p = pool.find(function(x){ var pn = norm(x.name); return pn && (it.indexOf(pn)>-1 || pn.indexOf(it)>-1); }); }
+        if(!p) return;
+        count++;
+        items += '<div class="g-item">' +
+                   '<img class="ph" loading="lazy" decoding="async" ' +
+                        'src="'+photoUrl(p.photoId)+'" data-id="'+esc(p.photoId)+'" data-try="0" ' +
+                        'onerror="retryImg(this)">' +
+                   '<div class="cap">'+esc(p.name||itemName)+'</div></div>';
+      });
+      if(count === 0) return;
+      html += '<div class="g-vendor"><h3>'+esc(v.name)+'</h3><div class="g-grid">'+items+'</div></div>';
+    });
+    wrap.innerHTML = html || '<div class="state">這天沒有已上架品項的照片</div>';
+  }
+
+  // ---- 小工具 ----
+  function normStrict(s){
+    return String(s==null?'':s).replace(/[\s　]+/g,'').replace(/[（]/g,'(').replace(/[）]/g,')').trim();
+  }
+  function norm(s){
+    return String(s==null?'':s).replace(/[（(【\[].*?[）)】\]]/g,'').replace(/[\s　]+/g,'').trim();
+  }
+  function photoUrl(id){
+    id = String(id||"").trim();
+    if(/^https?:\/\//.test(id)) return id;
+    return "https://lh3.googleusercontent.com/d/" + id + "=w400";
+  }
+  var IMG_SOURCES = [
+    function(id){ return "https://drive.google.com/thumbnail?id=" + id + "&sz=w400"; },
+    function(id){ return "https://lh3.googleusercontent.com/d/" + id + "=w400"; },
+    function(id){ return "https://drive.google.com/thumbnail?id=" + id + "&sz=w800"; }
+  ];
+  function retryImg(img){
+    var id = img.getAttribute('data-id') || '';
+    var t  = Number(img.getAttribute('data-try') || 0);
+    if(!id || /^https?:\/\//.test(id) || t >= IMG_SOURCES.length){ img.style.opacity = .12; return; }
+    img.setAttribute('data-try', t + 1);
+    setTimeout(function(){ img.src = IMG_SOURCES[t](id); }, 400 * (t + 1));
+  }
+  function fmtPrice(p){
+    if(p===''||p===null||p===undefined) return '';
+    var s = String(p).trim();
+    if(s==='') return '';
+    return s.charAt(0)==='$' ? s : '$'+s;
+  }
+  function esc(s){
+    return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+</body>
+</html>
